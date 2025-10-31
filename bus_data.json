@@ -1,0 +1,155 @@
+{
+    "buses": {
+        "bus_L1": {
+            "location": [
+                12.972296737254931,
+                79.16620814166355
+            ],
+            "last_update": "2025-10-23 11:40:10",
+            "eta": "11:46:30",
+            "distance_to_destination": 0.35,
+            "destination": "Main Gate",
+            "occupancy": 18,
+            "capacity": 40,
+            "on_time": true,
+            "route_id": "ladies_route",
+            "status": "On schedule"
+        },
+        "bus_L2": {
+            "location": [
+                12.971722015167897,
+                79.16355087207683
+            ],
+            "last_update": "2025-10-23 11:40:10",
+            "eta": "11:45:00",
+            "distance_to_destination": 0.25,
+            "destination": "Main Gate",
+            "occupancy": 22,
+            "capacity": 40,
+            "on_time": true,
+            "route_id": "ladies_route",
+            "status": "On schedule"
+        },
+        "bus_L3": {
+            "location": [
+                12.968700932643966,
+                79.15867203673623
+            ],
+            "last_update": "2025-10-23 11:40:10",
+            "eta": "11:48:45",
+            "distance_to_destination": 0.18,
+            "destination": "Pearl Research Park",
+            "occupancy": 33,
+            "capacity": 40,
+            "on_time": false,
+            "route_id": "ladies_route",
+            "status": "Delayed by 5 min"
+        },
+        "bus_L4": {
+            "location": [
+                12.968441062810065,
+                79.1559297465415
+            ],
+            "last_update": "2025-10-23 11:40:10",
+            "eta": "11:42:00",
+            "distance_to_destination": 0.40,
+            "destination": "Pearl Research Park",
+            "occupancy": 10,
+            "capacity": 40,
+            "on_time": true,
+            "route_id": "ladies_route",
+            "status": "On schedule"
+        },
+        "bus_M1": {
+            "location": [
+                12.973907460187062,
+                79.16408354631996
+            ],
+            "last_update": "2025-10-23 11:40:10",
+            "eta": "11:47:50",
+            "distance_to_destination": 0.50,
+            "destination": "Main Gate",
+            "occupancy": 21,
+            "capacity": 40,
+            "on_time": true,
+            "route_id": "mens_route",
+            "status": "On schedule"
+        },
+        "bus_M2": {
+            "location": [
+                12.973032511093457,
+                79.16369981315407
+            ],
+            "last_update": "2025-10-23 11:40:10",
+            "eta": "11:44:10",
+            "distance_to_destination": 0.35,
+            "destination": "Main Gate",
+            "occupancy": 31,
+            "capacity": 40,
+            "on_time": true,
+            "route_id": "mens_route",
+            "status": "On schedule"
+        },
+        "bus_M3": {
+            "location": [
+                12.972633681748777,
+                79.16137689016004
+            ],
+            "last_update": "2025-10-23 11:40:10",
+            "eta": "11:49:20",
+            "distance_to_destination": 0.28,
+            "destination": "Main Gate",
+            "occupancy": 17,
+            "capacity": 40,
+            "on_time": false,
+            "route_id": "mens_route",
+            "status": "Delayed by 7 min"
+        },
+        "bus_M4": {
+            "location": [
+                12.974240501910693,
+                79.15846734839572
+            ],
+            "last_update": "2025-10-23 11:40:10",
+            "eta": "11:46:00",
+            "distance_to_destination": 0.22,
+            "destination": "Main Gate",
+            "occupancy": 25,
+            "capacity": 40,
+            "on_time": true,
+            "route_id": "mens_route",
+            "status": "On schedule"
+        },
+        "bus_M5": {
+            "location": [
+                12.97438318215479,
+                79.15682645258096
+            ],
+            "last_update": "2025-10-23 11:40:10",
+            "eta": "11:48:15",
+            "distance_to_destination": 0.15,
+            "destination": "Main Gate",
+            "occupancy": 28,
+            "capacity": 40,
+            "on_time": true,
+            "route_id": "mens_route",
+            "status": "On schedule"
+        },
+        "bus_M6": {
+            "location": [
+                12.974890601663047,
+                79.15866972254265
+            ],
+            "last_update": "2025-10-23 11:40:10",
+            "eta": "11:43:30",
+            "distance_to_destination": 0.40,
+            "destination": "Main Gate",
+            "occupancy": 35,
+            "capacity": 40,
+            "on_time": false,
+            "route_id": "mens_route",
+            "status": "Delayed by 4 min"
+        }
+    },
+    "last_updated": "2025-10-23 11:40:10"
+}

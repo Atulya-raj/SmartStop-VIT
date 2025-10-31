@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update Bus Location - VIT Bus Tracker</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <header>
+        <h1><i class="fas fa-bus"></i> VIT Bus Tracker</h1>
+        <p>Update bus location and occupancy</p>
+    </header>
+
+    <div class="container">
+        <div class="scan-container">
+            <h2>Update Bus Location</h2>
+            <div class="bus-info">
+                <i class="fas fa-bus-alt"></i>
+                <h3>Bus ID: {{ bus_id }}</h3>
+            </div>
+
+            <form method="POST" class="scan-form">
+                <div class="form-group">
+                    <label for="busId"><i class="fas fa-id-badge"></i> Bus ID:</label>
+                    <input type="text" id="busId" name="bus_id" value="{{ bus_id }}" readonly>
+                </div>
+
+                <div class="form-group">
+                    <label for="locationSelect"><i class="fas fa-map-marker-alt"></i> Your Current Location:</label>
+                    <select id="locationSelect" name="location" required>
+                        <option value="" disabled selected>Select your location</option>
+                        {% for loc in locations %}
+                        <option value="{{ loc }}">{{ loc }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div class="form-group passenger-input">
+                    <label><i class="fas fa-users"></i> Passengers:</label>
+                    <div class="passenger-controls">
+                        <button type="button" id="decreasePassengers"><i class="fas fa-minus"></i></button>
+                        <input type="number" id="passengers" name="passengers" value="1" min="0" max="50">
+                        <button type="button" id="increasePassengers"><i class="fas fa-plus"></i></button>
+                    </div>
+                </div>
+
+                <div class="form-group toggle-group">
+                    <label><i class="fas fa-exchange-alt"></i> Action:</label>
+                    <div class="toggle-switch">
+                        <input type="checkbox" id="boardingToggle" name="boarding" checked>
+                        <label for="boardingToggle" class="toggle-label">
+                            <span class="toggle-option boarding-option">Boarding</span>
+                            <span class="toggle-slider"></span>
+                            <span class="toggle-option alighting-option">Alighting</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="submit-btn">
+                        <i class="fas fa-paper-plane"></i> Submit Update
+                    </button>
+                    <a href="/" class="back-btn">
+                        <i class="fas fa-arrow-left"></i> Back to Dashboard
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2025 VIT Bus Tracker</p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Passenger count controls
+            const decreaseBtn = document.getElementById('decreasePassengers');
+            const increaseBtn = document.getElementById('increasePassengers');
+            const passengersInput = document.getElementById('passengers');
+
+            decreaseBtn.addEventListener('click', function() {
+                const currentValue = parseInt(passengersInput.value);
+                if (currentValue > 0) {
+                    passengersInput.value = currentValue - 1;
+                }
+            });
+
+            increaseBtn.addEventListener('click', function() {
+                const currentValue = parseInt(passengersInput.value);
+                if (currentValue < 50) {
+                    passengersInput.value = currentValue + 1;
+                }
+            });
+
+            // Boarding/Alighting toggle styling
+            const boardingToggle = document.getElementById('boardingToggle');
+            const toggleLabel = document.querySelector('.toggle-label');
+
+            boardingToggle.addEventListener('change', function() {
+                if (this.checked) {
+                    toggleLabel.classList.remove('alighting');
+                    toggleLabel.classList.add('boarding');
+                } else {
+                    toggleLabel.classList.remove('boarding');
+                    toggleLabel.classList.add('alighting');
+                }
+            });
+
+            // Initialize toggle state
+            if (boardingToggle.checked) {
+                toggleLabel.classList.add('boarding');
+            } else {
+                toggleLabel.classList.add('alighting');
+            }
+        });
+    </script>
+</body>
+</html>

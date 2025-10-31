@@ -1,0 +1,23 @@
+{
+    "travel_times": {
+        "TT-SJT": [
+            {
+                "timestamp": "2025-03-26 23:00:47.028123",
+                "estimated_time": "23:00:26",
+                "distance": 0.38742509519617496,
+                "bus_id": "bus1"
+            }
+        ]
+    },
+    "occupancy_patterns": {
+        "bus1": {
+            "2_23": [
+                {
+                    "timestamp": "2025-03-26 23:00:47.028123",
+                    "occupancy": 3,
+                    "capacity": 40
+                }
+            ]
+        }
+    }
+}

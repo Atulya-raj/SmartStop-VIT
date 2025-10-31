@@ -1,0 +1,42 @@
+{
+    "ladies_route": {
+        "route_name": "Ladies Hostel Shuttle",
+        "start": "PRP",
+        "end": "MG",
+        "bus_ids": [
+            "bus_L1",
+            "bus_L2",
+            "bus_L3",
+            "bus_L4"
+        ],
+        "color": "#FF69B4",
+        "waypoints": [
+            "PRP",
+            "SJT",
+            "C-Block",
+            "MG"
+        ]
+    },
+    "mens_route": {
+        "route_name": "Mens Hostel Shuttle",
+        "start": "A-Block",
+        "end": "MG",
+        "bus_ids": [
+            "bus_M1",
+            "bus_M2",
+            "bus_M3",
+            "bus_M4",
+            "bus_M5",
+            "bus_M6"
+        ],
+        "color": "#0066FF",
+        "waypoints": [
+            "A-Block",
+            "E-Block",
+            "C-Block",
+            "D-Block",
+            "C-Block",
+            "MG"
+        ]
+    }
+}

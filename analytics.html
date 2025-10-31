@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analytics Dashboard - SmartStop VIT</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        /* --- Put your style definitions here or use style.css --- */
+    </style>
+</head>
+
+<body>
+    <header>
+        <h1><i class="fas fa-chart-line"></i> Analytics Dashboard</h1>
+        <a href="/" class="back-home-btn">
+            <i class="fas fa-arrow-left"></i> Back to Home
+        </a>
+
+        <p>Performance metrics and insights for SmartStop VIT</p>
+    </header>
+    <div class="container">
+        <div class="date-selector">
+            <select id="timePeriodSelect" onchange="updateDashboard()">
+                <option value="7" {% if selected_days|string=='7' %}selected{% endif %}>Last 7 Days</option>
+                <option value="30" {% if selected_days|string=='30' %}selected{% endif %}>Last 30 Days</option>
+                <option value="90" {% if selected_days|string=='90' %}selected{% endif %}>Last 90 Days</option>
+            </select>
+        </div>
+        <div class="analytics-container">
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div class="stat-icon"><i class="fas fa-users"></i></div>
+                    <div class="stat-title">Average Occupancy</div>
+                </div>
+                <div class="stat-value">{{ report.utilization.average_occupancy|default(0) }}%</div>
+                <div class="stat-description">
+                    Peak time: {{ report.utilization.peak_time|default('N/A') }} ({{
+                    report.utilization.peak_occupancy|default(0) }}%)
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div class="stat-icon"><i class="fas fa-bus"></i></div>
+                    <div class="stat-title">Busiest Bus</div>
+                </div>
+                <div class="stat-value">{{ report.utilization.busiest_bus|default('N/A') }}</div>
+                <div class="stat-description">
+                    Average occupancy: {{ report.utilization.busiest_bus_avg|default(0) }}%
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div class="stat-icon"><i class="fas fa-star"></i></div>
+                    <div class="stat-title">Average Rating</div>
+                </div>
+                <div class="stat-value">{{ report.feedback.average_rating|default(0) }}</div>
+                <div class="stat-description">
+                    Based on {{ report.feedback.total_feedback|default(0) }} feedback submissions
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div class="stat-icon"><i class="fas fa-shuttle-van"></i></div>
+                    <div class="stat-title">Active Buses</div>
+                </div>
+                <div class="stat-value">{{ report.active_buses|default(0) }}</div>
+                <div class="stat-description">Buses currently tracked by the system</div>
+            </div>
+        </div>
+        <!-- Utilization Chart -->
+        <div class="chart-container">
+            <h3>Bus Occupancy by Hour of Day</h3>
+            {% if report.charts is defined and report.charts.get('utilization_chart') %}
+            <img src="data:image/png;base64,{{ report.charts['utilization_chart'] }}" class="chart-image"
+                alt="Bus Utilization Chart">
+            <div class="chart-description">
+                <p>Average occupancy throughout the day. Peak: {{ report.utilization.peak_time|default('N/A') }}
+                    ({{ report.utilization.peak_occupancy|default(0) }}%).</p>
+            </div>
+            {% elif report.charts is defined and report.charts.get('utilization_data') %}
+            <canvas id="utilizationChartCanvas"></canvas>
+            <div class="chart-description">
+                <p>Average occupancy throughout the day. Peak: {{ report.utilization.peak_time|default('N/A') }}
+                    ({{ report.utilization.peak_occupancy|default(0) }}%).</p>
+            </div>
+            {% else %}
+            <p class="no-data">Not enough data available to generate chart.</p>
+            {% endif %}
+        </div>
+        <!-- Route Performance Chart -->
+        <div class="chart-container">
+            <h3>Route Performance Analysis</h3>
+            {% if report.charts is defined and report.charts.get('route_performance_chart') %}
+            <img src="data:image/png;base64,{{ report.charts['route_performance_chart'] }}" class="chart-image"
+                alt="Route Performance Chart">
+            <div class="chart-description">
+                <p>Fastest route: {{ report.route_performance.fastest_route|default('N/A') }}
+                    ({{ report.route_performance.fastest_route_time|default('N/A') }} min)</p>
+                <p>Slowest route: {{ report.route_performance.slowest_route|default('N/A') }}
+                    ({{ report.route_performance.slowest_route_time|default('N/A') }} min)</p>
+            </div>
+            {% elif report.charts is defined and report.charts.get('route_performance_data') %}
+            <canvas id="routePerformanceCanvas"></canvas>
+            <div class="chart-description">
+                <p>Fastest route: {{ report.route_performance.fastest_route|default('N/A') }}
+                    ({{ report.route_performance.fastest_route_time|default('N/A') }} min)</p>
+            </div>
+            {% else %}
+            <p class="no-data">Not enough data available to generate chart.</p>
+            {% endif %}
+        </div>
+        <!-- Route Performance Table -->
+        <div class="table-container">
+            <h3>Route Performance Details</h3>
+            {% if report.route_performance and report.route_performance.routes %}
+            <table class="analytics-table">
+                <thead>
+                    <tr>
+                        <th>Route</th>
+                        <th>Avg Time (min)</th>
+                        <th>Avg Distance (km)</th>
+                        <th>Avg Speed (km/h)</th>
+                        <th>Performance</th>
+                        <th>Samples</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for route, stats in report.route_performance.routes.items() %}
+                    <tr>
+                        <td>{{ route }}</td>
+                        <td>{{ stats.avg_time_minutes|default('N/A') }}</td>
+                        <td>{{ stats.avg_distance_km|default('N/A') }}</td>
+                        <td>{{ stats.avg_speed_kmh|default('N/A') }}</td>
+                        <td>
+                            {% set sp = stats.avg_speed_kmh|default(0) %}
+                            {% if sp >= 15 %}
+                            <span class="performance-indicator indicator-good"></span> Good
+                            {% elif sp >= 10 %}
+                            <span class="performance-indicator indicator-medium"></span> Average
+                            {% else %}
+                            <span class="performance-indicator indicator-poor"></span> Slow
+                            {% endif %}
+                        </td>
+                        <td>{{ stats.samples|default(0) }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <p class="no-data">No route performance data available.</p>
+            {% endif %}
+        </div>
+        <!-- Bus Ratings Table -->
+        <div class="table-container">
+            <h3>Bus Ratings</h3>
+            {% if report.feedback and report.feedback.bus_ratings %}
+            <table class="analytics-table">
+                <thead>
+                    <tr>
+                        <th>Bus ID</th>
+                        <th>Average Rating</th>
+                        <th>Performance</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for bus_id, rating in report.feedback.bus_ratings.items() %}
+                    <tr>
+                        <td>{{ bus_id }}</td>
+                        <td>{{ rating|default(0) }}/5.0</td>
+                        <td>
+                            {% set r = rating|default(0) %}
+                            {% if r >= 4.0 %}
+                            <span class="performance-indicator indicator-good"></span> Excellent
+                            {% elif r >= 3.0 %}
+                            <span class="performance-indicator indicator-medium"></span> Good
+                            {% else %}
+                            <span class="performance-indicator indicator-poor"></span> Needs Improvement
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <p class="no-data">No bus rating data available.</p>
+            {% endif %}
+        </div>
+    </div>
+    <footer>
+        <p>&copy; 2025 VIT Bus Tracker</p>
+        <div class="app-stats">
+            <span><i class="fas fa-calendar-alt"></i> Report Date: {{ report.date|default('N/A') }}</span>
+            <span><i class="fas fa-clock"></i> Last Updated: {{ report.last_updated|default('N/A') }}</span>
+        </div>
+    </footer>
+    <script>
+        function updateDashboard() {
+            const timePeriod = document.getElementById('timePeriodSelect').value;
+            const url = new URL(window.location.href);
+            url.pathname = '/analytics';
+            url.searchParams.set('days', timePeriod);
+            window.location.href = url.toString();
+        }
+        (function renderChartsIfNeeded() {
+            {% if report.charts is defined and report.charts.get('utilization_data') %}
+            const utilData = {{ report.charts.utilization_data | tojson
+        }};
+        const ctxU = document.getElementById('utilizationChartCanvas');
+        if (ctxU) {
+            new Chart(ctxU, {
+                type: 'line',
+                data: {
+                    labels: utilData.labels,
+                    datasets: [{
+                        label: 'Avg Occupancy (%)',
+                        data: utilData.data,
+                        fill: true,
+                        tension: 0.3,
+                        borderColor: '#0062cc',
+                        backgroundColor: 'rgba(0,98,204,0.12)'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: { y: { beginAtZero: true, max: 100 } }
+                }
+            });
+        }
+        {% endif %}
+        {% if report.charts is defined and report.charts.get('route_performance_data') %}
+        const rpData = {{ report.charts.route_performance_data | tojson }};
+        const ctxR = document.getElementById('routePerformanceCanvas');
+        if (ctxR) {
+            new Chart(ctxR, {
+                type: 'bar',
+                data: {
+                    labels: rpData.labels,
+                    datasets: [{
+                        label: 'Avg Time (min)',
+                        data: rpData.data,
+                        borderWidth: 1,
+                        backgroundColor: 'rgba(54,162,235,0.6)',
+                        borderColor: '#3498db'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: { y: { beginAtZero: true } }
+                }
+            });
+        }
+        {% endif %}
+}) ();
+    </script>
+</body>
+
+</html>
