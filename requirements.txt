@@ -1,0 +1,8 @@
+flask
+folium
+qrcode
+pillow
+geopy
+python-dateutil
+matplotlib
+numpy
